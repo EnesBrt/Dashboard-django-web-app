@@ -5,15 +5,19 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
-class UserCreationForm(UserCreationForm):
+# Create forms
+class CustomUserCreationForm(UserCreationForm):
+    # Define form fields
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
 
+    # Define form meta
     class Meta:
         model = User
         fields = UserCreationForm.Meta.fields + ("username", "email", "password")
 
+    # Clean method to validate username and email
     def clean_username(self):
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
@@ -26,6 +30,7 @@ class UserCreationForm(UserCreationForm):
             raise forms.ValidationError("Email already exists")
         return email
 
+    # Clean method to validate password
     def clean_password(self):
         password = self.cleaned_data.get("password")
         regex = re.compile(
@@ -39,6 +44,7 @@ class UserCreationForm(UserCreationForm):
             )
         return password
 
+    # Save method to create user
     def save(self, commit=True):
         user = super().save(commit=False)
         user.username = self.cleaned_data["username"]
