@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import CustomUserCreationForm
 from .forms import LoginForm
-from django.contrib.auth.views import LogoutView
 
 
 def signup(request):
@@ -27,7 +26,7 @@ def login_view(request):
 
 
 def logout_view(request):
-    return LogoutView.as_view()(request)
+    return render(request, "logout.html")
 
 
 def dashboard(request):
