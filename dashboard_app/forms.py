@@ -3,11 +3,11 @@ from django.core.exceptions import ValidationError
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 
 
 # Create forms
-class CustomUserCreationForm(UserCreationForm):
-    # Define form fields
+class CustomUserCreationForm(forms.ModelForm):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
@@ -33,20 +33,19 @@ class CustomUserCreationForm(UserCreationForm):
     # Clean method to validate password
     def clean_password(self):
         password = self.cleaned_data.get("password")
-        regex = re.compile(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
-        )
+        regex = re.compile(r"^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{8,}$")
+
         if len(password) < 8:
             raise forms.ValidationError("Password must be at least 8 characters long")
         if not regex.match(password):
             raise forms.ValidationError(
-                "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+                "Password must contain at least one uppercase letter or one lowercase letter, one digit."
             )
         return password
 
     # Save method to create user
     def save(self, commit=True):
-        user = super().save(commit=False)
+        user = super(CustomUserCreationForm, self).save(commit=False)
         user.username = self.cleaned_data["username"]
         user.email = self.cleaned_data["email"]
         user.set_password(self.cleaned_data["password"])
@@ -54,3 +53,8 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(required=True, widget=forms.PasswordInput)

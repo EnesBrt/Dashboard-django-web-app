@@ -1,0 +1,11 @@
+{% block title %}
+Logged Out |
+{% endblock title %}
+
+{% block content %}
+<div class="narrow-form">
+    <h1>Logged out</h1>
+    <p>You're all logged out!</p>
+    <a href="{% url 'login' %}">Login</a>
+</div>
+{% endblock content %}
