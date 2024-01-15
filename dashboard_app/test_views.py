@@ -6,11 +6,6 @@ from . import views
 from django.urls import reverse
 from django.test import Client
 
-import pytest
-from django.urls import reverse
-from django.contrib.auth.models import User
-from django.test import Client
-
 
 @pytest.mark.django_db
 class TestViews:
