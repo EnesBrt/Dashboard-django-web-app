@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from .forms import CustomUserCreationForm
 from .forms import LoginForm
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.core.mail import EmailMessage, send_mail
+from .tokens import generate_token
+from django.utils.encoding import force_bytes, force_str
 
 
 def signup(request):
