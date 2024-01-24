@@ -4,6 +4,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from .models import EmailVerification
+import re
 
 
 # Create forms
@@ -20,14 +22,17 @@ class CustomUserCreationForm(forms.ModelForm):
     # Clean method to validate username and email
     def clean_username(self):
         username = self.cleaned_data.get("username")
+
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError("Username already exists")
+
         return username
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Email already exists")
+
         return email
 
     # Clean method to validate password
@@ -37,10 +42,12 @@ class CustomUserCreationForm(forms.ModelForm):
 
         if len(password) < 8:
             raise forms.ValidationError("Password must be at least 8 characters long")
+
         if not regex.match(password):
             raise forms.ValidationError(
                 "Password must contain at least one uppercase letter or one lowercase letter, one digit."
             )
+
         return password
 
     # Save method to create user
@@ -49,9 +56,13 @@ class CustomUserCreationForm(forms.ModelForm):
         user.username = self.cleaned_data["username"]
         user.email = self.cleaned_data["email"]
         user.set_password(self.cleaned_data["password"])
+        user.is_active = False
 
         if commit:
             user.save()
+            # Create EmailVerification instance for the new user
+            EmailVerification.objects.create(user=user)
+
         return user
 
 

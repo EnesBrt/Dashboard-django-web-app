@@ -1,15 +1,16 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-import uuid
 
 
+# model that stores email verification token for user registration
 class EmailVerification(models.Model):
-    users = models.OnetoOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     verification_token = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True
     )
-    created_at = models.DateTimeFiled(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
 
     @property
