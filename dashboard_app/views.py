@@ -79,6 +79,7 @@ def activate_account(request, token):
     return redirect("login")
 
 
+# resend_activation_email function to resend the activation email to the user
 def resend_activation_email(request, user_id):
     try:
         # Retrieve the user object and email verification object based on the user ID provided in the URL parameters
@@ -131,6 +132,7 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 
+# Activation_failure function view
 def activation_failure(request, user_id):
     context = {"user_id": user_id}
     return render(request, "activation_failure.html", context)
@@ -146,13 +148,16 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 
+# Confirmation_sent function view
 def confirmation_sent(request):
     return render(request, "confirmation_sent.html")
 
 
+# Activation_success function view
 def activation_success(request):
     return render(request, "activation_success.html")
 
 
+# Activation_failure function view
 def activation_failure(request):
     return render(request, "activation_failure.html")
