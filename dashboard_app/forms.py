@@ -8,11 +8,11 @@ from .models import EmailVerification
 import re
 
 
-# Create forms
+# Create forms for user registration
 class CustomUserCreationForm(forms.ModelForm):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
-    password = forms.CharField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
 
     # Define form meta
     class Meta:
@@ -66,6 +66,7 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
+# Create forms for user login
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput)

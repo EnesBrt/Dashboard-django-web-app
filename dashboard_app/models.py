@@ -6,7 +6,7 @@ from django.utils import timezone
 
 # model that stores email verification token for user registration
 class EmailVerification(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     verification_token = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True
     )
@@ -15,5 +15,5 @@ class EmailVerification(models.Model):
 
     @property
     def is_token_expired(self):
-        expiration_duration = timezone.timedelta(hours=3)
+        expiration_duration = timezone.timedelta(minutes=2)
         return timezone.now() > self.created_at + expiration_duration

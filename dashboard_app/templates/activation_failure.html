@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activation Failed</title>
+</head>
+<body>
+    <h1>Account Activation Failed</h1>
+    <p>Unfortunately, the activation link has expired or is invalid. Please try resending the activation email.</p>
+    <form action="{% url 'resend_activation_email' user_id=user_id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Resend Activation Email</button>
+    </form>
+    <a href="{% url 'login' %}">Return to Home</a>
+</body>
+</html>
