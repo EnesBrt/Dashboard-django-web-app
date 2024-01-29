@@ -10,6 +10,10 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 import uuid
 from django.contrib.auth.models import User
+from .forms import ChangePassword
+from .forms import ChangeEmail
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 # signup function to handle user signup and email verification process
@@ -161,3 +165,41 @@ def activation_success(request):
 # Activation_failure function view
 def activation_failure(request):
     return render(request, "activation_failure.html")
+
+
+def profile(request):
+    # retrive the username of the logged in user
+    user_name = User.objects.get(id=request.user.id).username
+    user_email = User.objects.get(id=request.user.id).email
+    return render(request, "profile.html")
+
+
+def settings_profile(request):
+    password_form = ChangePassword(user=request.user)
+    email_form = ChangeEmail(user=request.user)
+
+    if request.method == "POST":
+        if "change_password" in request.POST:
+            password_form = ChangePassword(request.POST, user=request.user)
+            if password_form.is_valid():
+                # replace the old password with the new password
+                request.user.set_password(password_form.cleaned_data["new_password"])
+                request.user.save()
+                messages.success(request, "Your password has been changed")
+                return redirect("settings_profile")
+        elif "change_email" in request.POST:
+            email_form = ChangeEmail(request.POST, user=request.user)
+            if email_form.is_valid():
+                request.user.email = email_form.cleaned_data["new_email"]
+                request.user.save()
+                messages.success(request, "Your email has been changed")
+                return redirect("settings_profile")
+
+    else:
+        form = ChangeEmail(user=request.user)
+
+    return render(
+        request,
+        "settings_profile.html",
+        {"password_form": password_form, "email_form": email_form},
+    )

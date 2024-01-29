@@ -20,4 +20,6 @@ urlpatterns = [
     path("activation-success/", views.activation_success, name="activation_success"),
     # Path for account activation failure page
     path("activation-failure/", views.activation_failure, name="activation_failure"),
+    path("profile/", views.profile, name="profile"),
+    path("settings_profile/", views.settings_profile, name="settings_profile"),
 ]

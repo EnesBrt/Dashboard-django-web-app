@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h1>Settings</h1>
+</div>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<style>
+    #Password, #Email {
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+</style>
+
+<div id="Password">
+    <p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#ChangePassword" role="button" aria-expanded="false" aria-controls="ChangePassword">
+        Change password
+    </a>
+    </p>
+    <div class="collapse" id="ChangePassword">
+        <div>
+            <form method="post">
+                {% csrf_token %}
+                {{ password_form.as_p }}
+                <button type="submit" name="change_password">Change Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="Email">
+    <p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#ChangeEmail" role="button" aria-expanded="false" aria-controls="ChangeEmail">
+        Change Email
+    </a>
+    </p>
+    <div class="collapse" id="ChangeEmail">
+        <div></div>
+            <form method="post">
+                {% csrf_token %}
+                {{ email_form.as_p }}
+                <button type="submit" name="change_email">Change Email</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

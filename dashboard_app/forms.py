@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from .models import EmailVerification
 import re
+from django.contrib.auth.hashers import check_password
 
 
 # Create forms for user registration
@@ -70,3 +71,35 @@ class CustomUserCreationForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
     password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+
+class ChangePassword(forms.Form):
+    new_password = forms.CharField(required=True, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(ChangePassword, self).__init__(*args, **kwargs)
+
+    def clean_confirm_password(self):
+        new_password = self.cleaned_data.get("new_password")
+        confirm_password = self.cleaned_data.get("confirm_password")
+        if new_password != confirm_password:
+            raise forms.ValidationError("Passwords do not match")
+        return confirm_password
+
+
+class ChangeEmail(forms.Form):
+    new_email = forms.EmailField(required=True)
+    confirm_email = forms.EmailField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(ChangeEmail, self).__init__(*args, **kwargs)
+
+    def clean_confirm_email(self):
+        new_email = self.cleaned_data.get("new_email")
+        confirm_email = self.cleaned_data.get("confirm_email")
+        if new_email != confirm_email:
+            raise forms.ValidationError("Emails do not match")
+        return confirm_email
