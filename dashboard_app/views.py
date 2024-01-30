@@ -156,9 +156,24 @@ def logout_view(request):
 # Dashboard function view
 def dashboard(request):
     chart_data = {"labels": [], "data": []}
+    legendary_counts_data = {
+        "labels": [],
+        "data": [],
+    }
+    generations_counts_data = {
+        "labels": [],
+        "data": [],
+    }
+    # Initialize with labels and data keys
     if request.method == "POST":
         form = CsvFileForm(request.POST, request.FILES)
         if form.is_valid():
+            try:
+                old_file = UploadCsvFile.objects.get(id=1)
+                old_file.file.delete()
+            except UploadCsvFile.DoesNotExist:
+                pass
+
             new_file = UploadCsvFile(file=request.FILES["file"])
             new_file.save()
 
@@ -170,8 +185,20 @@ def dashboard(request):
             chart_data["labels"] = missing_values.index.tolist()
             chart_data["data"] = missing_values.values.tolist()
 
+            # Calculate the counts of legendary Pokemon
+            legendary_counts = df["Legendary"].value_counts().to_dict()
+            legendary_counts_data["labels"] = list(legendary_counts.keys())
+            legendary_counts_data["data"] = list(legendary_counts.values())
+
+            # Calculate the counts of Generations
+            generations_counts = df["Generation"].value_counts().to_dict()
+            generations_counts_data["labels"] = list(generations_counts.keys())
+            generations_counts_data["data"] = list(generations_counts.values())
+
             # Convert data to JSON
             chart_data_json = json.dumps(chart_data)
+            legendary_counts_json = json.dumps(legendary_counts_data)
+            generations_counts_json = json.dumps(generations_counts_data)
 
             df_html = df.head(20).to_html(
                 classes="table table-dark table-hover", index=False
@@ -180,7 +207,13 @@ def dashboard(request):
             return render(
                 request,
                 "dashboard.html",
-                {"form": form, "chart_data": chart_data_json, "df_html": df_html},
+                {
+                    "form": form,
+                    "chart_data": chart_data_json,
+                    "legendary_counts": legendary_counts_json,
+                    "generations_counts": generations_counts_json,
+                    "df_html": df_html,
+                },
             )
     else:
         form = CsvFileForm()

@@ -14,7 +14,7 @@
     </div>
     {% if chart_data %}
         <h2>Missing Values Chart</h2>
-        <canvas id="missingValuesChart" width="400" height="400"></canvas>
+        <canvas id="missingValuesChart" width="50" height="50"></canvas>
         <script>
             var ctx = document.getElementById('missingValuesChart').getContext('2d');
             var chartData = JSON.parse('{{ chart_data|safe }}');
@@ -39,6 +39,55 @@
                 }
             });
         </script>
+        {% if legendary_counts %}
+            <h2>Legendary Pokemon Counts</h2>
+            <canvas id="legendaryChart" width="50" height="50"></canvas>
+            <script>
+                var ctx = document.getElementById('legendaryChart').getContext('2d');
+                var legendaryData = JSON.parse('{{ legendary_counts|safe }}');
+                var legendaryChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: legendaryData.labels,
+                        datasets: [{
+                            label: 'Is Legendary',
+                            data: legendaryData.data,
+                            backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+            {% if generations_counts %}
+            <h2>Generation Counts</h2>
+            <canvas id="generationChart" width="50" height="50"></canvas>
+            <script>
+                var ctx = document.getElementById('generationChart').getContext('2d');
+                var generationData = JSON.parse('{{ generations_counts|safe }}');
+                var generationChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: generationData.labels,
+                        datasets: [{
+                            label: 'Generation',
+                            data: generationData.data,
+                            backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                            borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            </script>
+            {% endif %}
+        {% endif %}
     {% endif %}
 </div>
 

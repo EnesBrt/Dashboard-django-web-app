@@ -110,3 +110,13 @@ class CsvFileForm(forms.ModelForm):
     class Meta:
         model = UploadCsvFile
         fields = ("file",)
+
+    def clean_file(self):
+        file = self.cleaned_data.get("file")
+        if file:
+            if file.name.endswith(".csv"):
+                return file
+            else:
+                raise forms.ValidationError("File is not a CSV file")
+        else:
+            raise forms.ValidationError("File is not a CSV file")
