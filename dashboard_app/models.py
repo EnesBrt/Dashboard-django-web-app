@@ -17,3 +17,8 @@ class EmailVerification(models.Model):
     def is_token_expired(self):
         expiration_duration = timezone.timedelta(minutes=2)
         return timezone.now() > self.created_at + expiration_duration
+
+
+class UploadCsvFile(models.Model):
+    file = models.FileField(upload_to="csv_files")
+    uploaded_at = models.DateTimeField(auto_now_add=True)

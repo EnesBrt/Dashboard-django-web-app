@@ -1,8 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    <h1>this is the Dashboard</h1>
-    <p>Welcome !</p>
+<div class="container">
+    <h2>Upload CSV File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <h2>Data Table</h2>
+    <div>
+        {{ df_html|safe }}
+    </div>
+    {% if chart_data %}
+        <h2>Missing Values Chart</h2>
+        <canvas id="missingValuesChart" width="400" height="400"></canvas>
+        <script>
+            var ctx = document.getElementById('missingValuesChart').getContext('2d');
+            var chartData = JSON.parse('{{ chart_data|safe }}');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: '# of Missing Values',
+                        data: chartData.data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
 </div>
+
 {% endblock %}

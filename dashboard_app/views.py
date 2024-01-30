@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import CustomUserCreationForm
 from .forms import LoginForm
@@ -14,6 +15,11 @@ from .forms import ChangePassword
 from .forms import ChangeEmail
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .models import UploadCsvFile
+import pandas as pd
+from .forms import CsvFileForm
+import json
+import numpy
 
 
 # signup function to handle user signup and email verification process
@@ -149,7 +155,36 @@ def logout_view(request):
 
 # Dashboard function view
 def dashboard(request):
-    return render(request, "dashboard.html")
+    chart_data = {"labels": [], "data": []}
+    if request.method == "POST":
+        form = CsvFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_file = UploadCsvFile(file=request.FILES["file"])
+            new_file.save()
+
+            # Read the CSV file
+            df = pd.read_csv(new_file.file.path)
+
+            # Calculate missing values
+            missing_values = df.isnull().sum()
+            chart_data["labels"] = missing_values.index.tolist()
+            chart_data["data"] = missing_values.values.tolist()
+
+            # Convert data to JSON
+            chart_data_json = json.dumps(chart_data)
+
+            df_html = df.head(20).to_html(
+                classes="table table-dark table-hover", index=False
+            )
+
+            return render(
+                request,
+                "dashboard.html",
+                {"form": form, "chart_data": chart_data_json, "df_html": df_html},
+            )
+    else:
+        form = CsvFileForm()
+    return render(request, "dashboard.html", {"form": form})
 
 
 # Confirmation_sent function view

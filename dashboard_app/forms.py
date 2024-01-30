@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import EmailVerification
 import re
 from django.contrib.auth.hashers import check_password
+from .models import UploadCsvFile
 
 
 # Create forms for user registration
@@ -103,3 +104,9 @@ class ChangeEmail(forms.Form):
         if new_email != confirm_email:
             raise forms.ValidationError("Emails do not match")
         return confirm_email
+
+
+class CsvFileForm(forms.ModelForm):
+    class Meta:
+        model = UploadCsvFile
+        fields = ("file",)
