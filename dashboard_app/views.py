@@ -19,7 +19,8 @@ from .models import UploadCsvFile
 import pandas as pd
 from .forms import CsvFileForm
 import json
-import numpy
+import os
+from django.conf import settings
 
 
 # signup function to handle user signup and email verification process
@@ -171,6 +172,11 @@ def dashboard(request):
             try:
                 old_file = UploadCsvFile.objects.get(id=1)
                 old_file.file.delete()
+                csv_file_path = os.path.join(
+                    settings.MEDIA_ROOT, "csv_files", "Pokemon.csv"
+                )
+                if os.path.exists(csv_file_path):
+                    os.remove(csv_file_path)
             except UploadCsvFile.DoesNotExist:
                 pass
 
