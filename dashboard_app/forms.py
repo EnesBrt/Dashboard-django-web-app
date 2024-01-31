@@ -120,3 +120,20 @@ class CsvFileForm(forms.ModelForm):
                 raise forms.ValidationError("File is not a CSV file")
         else:
             raise forms.ValidationError("File is not a CSV file")
+
+
+class RecoverPassword(forms.Form):
+    username = forms.CharField(required=True)
+    new_password = forms.CharField(required=True, widget=forms.PasswordInput)
+    confirm_password = forms.CharField(required=True, widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super(RecoverPassword, self).__init__(*args, **kwargs)
+
+    def clean_confirm_password(self):
+        new_password = self.cleaned_data.get("new_password")
+        confirm_password = self.cleaned_data.get("confirm_password")
+        if new_password != confirm_password:
+            raise forms.ValidationError("Passwords do not match")
+        return confirm_password

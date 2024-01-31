@@ -2,11 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Activated</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #f7f9fb;
+        }
+
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: calc(100vh - 60px);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            border: transparent;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+            border: transparent;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            margin-top: 20px;
+            margin-bottom: 40px;
+            font-size: 30px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Account Successfully Activated</h1>
-    <p>Your account has been successfully activated. You can now log in.</p>
-    <a href="{% url 'login' %}">Login</a>
+    <div>
+        <h1>Account Successfully Activated !</h1>
+        <p>Your account has been successfully activated. You can now log in.</p>
+        <a class="btn btn-primary" href="{% url 'login' %}">Return to Login</a>
+    </div>
 </body>
 </html>

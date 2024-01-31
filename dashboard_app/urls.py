@@ -22,4 +22,5 @@ urlpatterns = [
     path("activation-failure/", views.activation_failure, name="activation_failure"),
     path("profile/", views.profile, name="profile"),
     path("settings_profile/", views.settings_profile, name="settings_profile"),
+    path("forgot_password/", views.forgot_password, name="forgot_password"),
 ]

@@ -1,20 +1,98 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<style>
+
+    body {
+        background-color: #f7f9fb;
+        border: transparent;
+        padding-top: 100px;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .chart1 {
+    width: 1200px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
+    }
+
+    .chart2 {
+    width: 700px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
+    margin-right: 20px;
+}
+
+    .chart3 {
+        width: 700px; /* Adjust as needed */
+        height: 500px; /* Adjust as needed */
+        margin-left: 20px;
+    }
+
+    #row_one {
+        margin-top: 100px;
+        margin-bottom: 100px;
+    }
+
+    #row_two {
+        margin-top: 100px;
+        margin-bottom: 200px;
+    }
+
+    #table {
+        margin-top: 100px;
+    }
+
+    h2 {
+        font-family: Arial, Helvetica, sans-serif;
+        margin-bottom: 50px;
+    }
+
+    .btn-primary {
+        margin-top: 20px;
+        border: transparent;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    input {
+        border: transparent;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+    }
+
+</style>
+
+
 <div class="container">
     <h2>Upload CSV File</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-    </form>
-    <h2>Data Table</h2>
-    <div>
-        {{ df_html|safe }}
+    <div class="mb-3">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="{{ form.file.id_for_label }}" class="form-label"></label>
+            <input class="form-control" type="file" id="{{ form.file.id_for_label }}" name="{{ form.file.html_name }}">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
     </div>
-    {% if chart_data %}
+    </div>
+    <div id="table">
+        {% if df_html %}
+        <h2>Dataset</h2>
+        {{ df_html|safe }}
+        {% endif %}
+    </div>
+    <div class="row" id="row_one">
+        <div class="col chart1">
+            {% if chart_data %}
         <h2>Missing Values Chart</h2>
-        <canvas id="missingValuesChart" width="50" height="50"></canvas>
+        <canvas id="missingValuesChart"></canvas>
         <script>
             var ctx = document.getElementById('missingValuesChart').getContext('2d');
             var chartData = JSON.parse('{{ chart_data|safe }}');
@@ -31,17 +109,19 @@
                     }]
                 },
                 options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                    responsive: true,
+                    maintainAspectRatio: false,
                 }
             });
         </script>
-        {% if legendary_counts %}
+        {% endif %}
+        </div>
+    </div>
+    <div class="row" id="row_two">
+        <div class="col chart2">
+            {% if legendary_counts %}
             <h2>Legendary Pokemon Counts</h2>
-            <canvas id="legendaryChart" width="50" height="50"></canvas>
+            <canvas id="legendaryChart"></canvas>
             <script>
                 var ctx = document.getElementById('legendaryChart').getContext('2d');
                 var legendaryData = JSON.parse('{{ legendary_counts|safe }}');
@@ -58,17 +138,17 @@
                         }]
                     },
                     options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                        responsive: true,
+                        maintainAspectRatio: false,
                         }
-                    }
                 });
             </script>
+            {% endif %}
+        </div>
+        <div class="col chart3">
             {% if generations_counts %}
             <h2>Generation Counts</h2>
-            <canvas id="generationChart" width="50" height="50"></canvas>
+            <canvas id="generationChart"></canvas>
             <script>
                 var ctx = document.getElementById('generationChart').getContext('2d');
                 var generationData = JSON.parse('{{ generations_counts|safe }}');
@@ -87,8 +167,7 @@
                 });
             </script>
             {% endif %}
-        {% endif %}
-    {% endif %}
+        </div>
+    </div>
 </div>
-
 {% endblock %}

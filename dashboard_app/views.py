@@ -21,6 +21,8 @@ from .forms import CsvFileForm
 import json
 import os
 from django.conf import settings
+from .forms import RecoverPassword
+from django.contrib.auth.hashers import make_password
 
 
 # signup function to handle user signup and email verification process
@@ -277,3 +279,21 @@ def settings_profile(request):
         "settings_profile.html",
         {"password_form": password_form, "email_form": email_form},
     )
+
+
+def forgot_password(request):
+    if request.method == "POST":
+        form = RecoverPassword(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            new_password = form.cleaned_data.get("new_password")
+            try:
+                user = User.objects.get(username=username)
+                user.password = make_password(new_password)
+                user.save()
+                return redirect("login")
+            except User.DoesNotExist:
+                form.add_error("username", "User does not exist")
+    else:
+        form = RecoverPassword()
+    return render(request, "forgot_password.html", {"form": form})
