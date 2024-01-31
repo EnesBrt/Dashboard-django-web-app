@@ -3,17 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+
+        body {
+            background-color: #f7f9fb;
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 60px); /* Adjust this value based on the height of your navbar */
+        }
+
+    form {
+        background-color: white;
+        border: transparent; /* Change this to the color you want for the outline */
+        padding: 20px;
+        border-radius: 5px;
+        width: 100%;
+        max-width: 400px; /* Limit the width of the form */
+        margin: auto; /* Center the form */
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+    .form-label {
+        font-family: Arial, Helvetica, sans-serif;
+        }
+
+    input {
+        border-radius: 5px;
+        border: none;
+        width: 100%;
+        background-color: #f6f6f6;
+        height: 30px;
+        }
+    /* the button and the signup link at the center */
+    .btn-primary {
+        width: 100%;
+        margin-right: 10px;
+        margin-top: 20px;
+
+        }
+
+    p {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        }
+
+    </style>
 </head>
 
-{% block title %}Login{% endblock %}
-
 {% block content %}
-<h1>Login</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-    <a href="{% url 'signup' %}">Signup</a>
-</form>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        <h1>Login</h1>
+        <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label">Username</label><br>
+            {{ form.username.errors }}
+            {{ form.username}}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.password.id_for_label }}" class="form-label">Password</label><br>
+            {{ form.password.errors }}
+            <input id="passwordField" type="password" name="{{ form.password.name }}" />
+        </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onchange="togglePasswordVisibility()">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Show password</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <p>Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
+    </form>
+</div>
+
+<script>
+    function togglePasswordVisibility() {
+        var passwordField = document.getElementById("passwordField");
+        var passwordSwitch = document.getElementById("flexSwitchCheckDefault");
+        if (passwordSwitch.checked) {
+            passwordField.type = "text";
+        } else {
+            passwordField.type = "password";
+        }
+    }
+</script>
 {% endblock %}
+</html>
