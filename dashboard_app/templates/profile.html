@@ -1,9 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
+<style>
+
+    body {
+        background-color: #f7f9fb;
+    }
+
+
+    #profile {
+       text-align: center;
+       margin-top: 40px;
+       font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #profile #username {
+        margin-top:50px;
+        margin-bottom: 50px;
+        font-size: 30px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Adjust color and transparency as needed */
+        padding-bottom: 10px; /* Adjust space between text and line as needed */
+        width: 50%; /* Adjust this value to change the width of the line */
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    #profile #username p {
+        border-bottom: none; /* Remove border from p tag */
+    }
+
+    #profile #email {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        font-size: 30px;
+    }
+
+</style>
+
+
+<div id="profile">
     <h1>Hey ! Good to see you !</h1>
-    <p>Username: {{ user.username }}</p>
-    <p>Email: {{ user.email }}</p>
+    <div id="username">
+        <p id="title_username">Username:</p>
+        <p id="username">{{ user.username }}</p>
+    </div>
+    <div id="email">
+        <p id="title_email">Email:</p>
+        <p id="email">{{ user.email }}</p>
+    </div>
 </div>
 {% endblock %}
